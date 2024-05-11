@@ -111,21 +111,3 @@ export class AppPage {
     await this.registerUserBtn.click();
   }
 }
-
-function RegisterUserDetails() {
-  const email = "awais1@gmail.com";
-  const password = "awais12";
-  const confirmPassword = "awais12";
-  const firstName = "Muhammad";
-  const lastName = "Awais";
-
-  const userDetails = {
-    email: email,
-    password: password,
-    confirmPassword: confirmPassword,
-    firstName: firstName,
-    lastName: lastName,
-  };
-
-  return userDetails;
-}

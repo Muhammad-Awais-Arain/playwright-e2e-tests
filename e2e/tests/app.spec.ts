@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { AppPage } from "../pages/app.page";
+import { generateTweet, getUserData, userEmail, userPassword } from '../globals/global';
 
 let baseURL = process.env.BASE_URL || "";
 let base_api_url = process.env.BASE_API_URL || "";
@@ -7,17 +8,15 @@ let base_api_url = process.env.BASE_API_URL || "";
 test.describe("App Page Scenarios", () => {
 
     let appPageObj: AppPage;
-    //Login
-    const loginUserEmail = "john@gmail.com";
-    const loginUserPassword = "john";
     // Tweet
-    const tweet = "This is an automated tweet 4";
+    const tweet = generateTweet();
     // Regiser Data
-    const email = "john2@gmail.com";
-    const password = "john";
-    const confirmPassword = "john";
-    const firstName = "John";
-    const lastName = "Doe";
+    const registerDetails = getUserData();
+    const email = registerDetails.email;
+    const password = registerDetails.password;
+    const confirmPassword = registerDetails.confirmPassword;
+    const firstName = registerDetails.firstName;
+    const lastName = registerDetails.lastName;
 
     test.beforeEach(async ({ page }) => {
         appPageObj = new AppPage(page);
@@ -32,23 +31,23 @@ test.describe("App Page Scenarios", () => {
     });
 
     test("Login @Login", async () => {
-        await appPageObj.login(loginUserEmail, loginUserPassword);
+        await appPageObj.login(userEmail, userPassword);
         await appPageObj.expectPageLocators();
     });
 
     test("Logout", async () => {
-        await appPageObj.login(loginUserEmail, loginUserPassword);
+        await appPageObj.login(userEmail, userPassword);
         await appPageObj.expectPageLocators();
         await appPageObj.logout();
     });
 
-    test("Register User", async ({ page }) => {
+    test("Register User", async () => {
         await appPageObj.Register(email, password, confirmPassword, firstName, lastName);
         await appPageObj.expectPageLocators();
     });
 
     test("Write a Tweet", async ({ page }) => {
-        await appPageObj.login(loginUserEmail, loginUserPassword);
+        await appPageObj.login(userEmail, userPassword);
         await appPageObj.expectPageLocators();
         await appPageObj.Tweets(tweet);
         await page.waitForTimeout(2000);
@@ -59,7 +58,7 @@ test.describe("App Page Scenarios", () => {
     });
 
     test("Delete a Tweet", async ({ page }) => {
-        await appPageObj.login(loginUserEmail, loginUserPassword);
+        await appPageObj.login(userEmail, userPassword);
         await appPageObj.expectPageLocators();
         const deleteButton = await page.waitForSelector('svg[test-id^="delete-tweet"]');
         await deleteButton.click();
@@ -67,7 +66,7 @@ test.describe("App Page Scenarios", () => {
     });
 
     test("Navigate to Profile Page", async({ page }) => {
-        await appPageObj.login(loginUserEmail, loginUserPassword);
+        await appPageObj.login(userEmail, userPassword);
         await appPageObj.expectPageLocators();
         await appPageObj.sideMenuProfile.click();
         await page.waitForTimeout(2000);
@@ -75,7 +74,7 @@ test.describe("App Page Scenarios", () => {
     });
 
     test("Navigate to Message Page", async({ page }) => {
-        await appPageObj.login(loginUserEmail, loginUserPassword);
+        await appPageObj.login(userEmail, userPassword);
         await appPageObj.expectPageLocators();
         await appPageObj.sideMenuMessages.click();
         await page.waitForTimeout(2000);
@@ -83,7 +82,7 @@ test.describe("App Page Scenarios", () => {
     });
 
     test("Navigate to Notifications Page", async({ page }) => {
-        await appPageObj.login(loginUserEmail, loginUserPassword);
+        await appPageObj.login(userEmail, userPassword);
         await appPageObj.expectPageLocators();
         await appPageObj.sideMenuNotifications.click();
         await page.waitForTimeout(2000);
@@ -91,7 +90,7 @@ test.describe("App Page Scenarios", () => {
     });
 
     test("Like a Tweet", async ({ page }) => {
-        await appPageObj.login(loginUserEmail, loginUserPassword);
+        await appPageObj.login(userEmail, userPassword);
         await appPageObj.expectPageLocators();
         const svgElement = await page.$('svg[test-id="like-tweet-1"]');
         if (svgElement === null) {
@@ -109,7 +108,7 @@ test.describe("App Page Scenarios", () => {
     });
 
     test("API Tests", async ({ request, page }) => {
-        await appPageObj.login(loginUserEmail, loginUserPassword);
+        await appPageObj.login(userEmail, userPassword);
         await page.waitForTimeout(4000);
         const tweetsOnPage = await appPageObj.getTweets();
         console.log("Tweets on Page:", tweetsOnPage);
